@@ -7,8 +7,8 @@
 #define SET 0x02
 #define POST 0x03
 
-#define LIGHT_CYCLE 0x01   //get or set light cycle
-#define HEATER_PID 0x02    //get or set light cycle
+#define LIGHT_CYCLE 0x01
+#define HEATER_PID 0x02
 #define LIGHT_STATE 0x03
 #define HEATER_STATE 0x04
 #define SAVE_CONFIG 0x05

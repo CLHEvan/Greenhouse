@@ -22,8 +22,8 @@ OGConfig::OGConfig(CLight* light, CHeater* heater, uint8_t sdPin) : _light(light
   pinMode(sdPin, OUTPUT);
 
   if (!SD.begin(sdPin)) {
-    //log
-    for (;;);
+    //log . . .
+    while(true);
   }
 }
 
@@ -111,7 +111,7 @@ byte* OGConfig::onCommand(byte *cmd, int length, int &responseLength) // = -1
 }
 
 /*
-   eache commande begin with one byte to indicate her length, this byte will be removed in the read
+   each commands begin with one byte to indicate her length, this byte will be removed in the read
 */
 void OGConfig::readSavedCommands()
 {
@@ -134,7 +134,7 @@ void OGConfig::readSavedCommands()
   if (!config)
   {
     //serial . . .
-    while (true);
+    return;
   }
 
   int size = (int) config.size(); //.size() return long
@@ -165,9 +165,8 @@ void OGConfig::writeConfig()
   File config = SD.open(CMD_FILE, FILE_WRITE);
   if (!config)
   {
-    return; //block the program can be dangerous for the greenhouse
-    //serial . . .
-    //while(true);
+    //log . . .
+    return;
   }
 
   byte buff[36] =

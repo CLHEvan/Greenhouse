@@ -23,8 +23,7 @@ class OGConfig
 public:
   OGConfig(CLight* light, CHeater* heater, uint8_t sdPin);
   
-  void onCommand(byte *cmd, int length);
-  byte* onCommand(byte *cmd, int length, int &responseLength);
+  byte* onCommand(byte *cmd, int length, int &rlength);
   
   void readSavedCommands();
   void writeConfig();
@@ -37,7 +36,7 @@ private:
 
   byte join(byte type, byte name);
   void cat(byte* buff, byte* buff2, int start, int length);
-  double getDouble(byte* buff, int start);
 };
+
 
 #endif

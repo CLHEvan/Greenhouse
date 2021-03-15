@@ -25,11 +25,9 @@ CHeater* heater;
 
 OGConfig* config;
 
-uint32_t lastUpdate = 0u;
-
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   
   time = new MTime();
   temp = new MTemp(IN_TEMP);
@@ -43,28 +41,31 @@ void setup()
 
 void loop()
 {
-  int size;
-  if(size = Serial.available() > 0)
+  if(Serial.available() > 0)
   {
+    delay(50); // wait data
+    int size = Serial.available();
+    
     byte data[size];
     Serial.readBytes(data, size);
     
-    int respLength;
-    byte* response = config->onCommand(data, size, respLength);
+    int rlength;
+    byte* response = config->onCommand(data, size, rlength);
     
-    if(respLength != -1)
-      Serial.write(response, respLength);
+    if(rlength > 0)
+      Serial.write(response, rlength);
+
+    delete[] response;
   }
-  
-  long currTime = millis();
-  
-  if( ( currTime - lastUpdate ) > UPDATE_TIME)
+
+
+  static unsigned long lastUpdate = 0;
+  long unsigned currTime = millis();
+  if((currTime - lastUpdate) > UPDATE_TIME)
   {
     lastUpdate = currTime;
     
-    //updates
     light->update();
     heater->update();
-    //
   }
 }

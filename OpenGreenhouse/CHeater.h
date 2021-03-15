@@ -20,9 +20,10 @@ public:
   void setActive(bool act);
   bool getActive();
 
-  void setKp(double Kp);
+ /* void setKp(double Kp);
   void setKi(double Ki);
-  void setKd(double Kd);
+  void setKd(double Kd);*/
+  void setPID(double Kp, double Ki, double Kd);
   double getKp();
   double getKi();
   double getKd();

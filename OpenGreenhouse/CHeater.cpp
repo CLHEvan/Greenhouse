@@ -13,16 +13,10 @@ void CHeater::update()
 void CHeater::setActive(bool act) { this->_active = act; }
 bool CHeater::getActive() { return this->_active; }
 
-void CHeater::setKp(double Kp)
+void CHeater::setPID(double Kp, double Ki, double Kd)
 {
   _Kp = Kp;
-}
-void CHeater::setKi(double Ki)
-{
   _Ki = Ki;
-}
-void CHeater::setKd(double Kd)
-{
   _Kd = Kd;
 }
 double CHeater::getKp()

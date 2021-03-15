@@ -15,7 +15,7 @@ public:
   CLight(ITime* time, uint8_t light); //use read()
   void update();
   
-  void setCycle(uint8_t startHour, uint8_t stopHour); //change and save
+  void setCycle(uint8_t startHour, uint8_t stopHour); 
   
   void setActive(bool act);
   bool getActive();

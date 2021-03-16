@@ -1,42 +1,30 @@
-#ifndef HEATER_H
-#define HEATER_H
+#ifndef CHEATER_H
+#define CHEATER_H
 
 #include "Arduino.h"
 #include "ITemp.h"
 
-/*
- * CHeater class
- * 
- * manage heater pin with a PID and ITemp class
- * 
- */
 class CHeater
 {
 public:
-  CHeater(ITemp* temp, uint8_t heater);
-  
+  CHeater(ITemp* temp, uint8_t pin);
+
   void update();
-  
-  void setActive(bool act);
+
+  void setTemp(double on, double off);
+  double getOn();
+  double getOff();
+
+  void setActive(bool state);
   bool getActive();
 
- /* void setKp(double Kp);
-  void setKi(double Ki);
-  void setKd(double Kd);*/
-  void setPID(double Kp, double Ki, double Kd);
-  double getKp();
-  double getKi();
-  double getKd();
-  
 private:
   bool _active = false;
-  
+  uint8_t _heaterPin;
   ITemp* _temp;
-  uint8_t _heater;
-  
-  double _Kp;
-  double _Ki;
-  double _Kd;
+
+  double _setOn = 23;
+  double _setOff = 25;
 };
 
 #endif

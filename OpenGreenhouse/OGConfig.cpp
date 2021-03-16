@@ -8,7 +8,7 @@
 #define POST 0x03
 
 #define LIGHT_CYCLE 0x01
-#define HEATER_PID 0x02
+#define HEATER_TEMP 0x02
 #define LIGHT_STATE 0x03
 #define HEATER_STATE 0x04
 #define SAVE_CONFIG 0x05
@@ -95,31 +95,33 @@ byte* OGConfig::onCommand(byte *cmd, int length, int &rlength)
       response = new byte[rlength]{ join(POST, HEATER_STATE), (byte)_heater->getActive()};
     }
   }
-  else if(name == HEATER_PID)
+  else if(name == HEATER_TEMP)
   {
-    
-    if(type == SET && length == (sizeof(double) * 3) + 1)
+    if(type == SET && length == (sizeof(double) * 2) + 1)
     {
       Buffer bbuff(cmd, length);
       
       bbuff.setCursor(length);
-      
-      double Kd = bbuff.getValue<double>();
-      double Ki = bbuff.getValue<double>();
-      double Kp = bbuff.getValue<double>();
-      
-      _heater->setPID(Kp, Ki, Kd);
+
+      double voff = bbuff.getValue<double>();
+      double von  = bbuff.getValue<double>();
+
+      _heater->setTemp(von, voff);
     }
     else if(type == GET)
     {
-      rlength = (sizeof(double) * 3) + (sizeof(byte) * 1); 
+      rlength = (sizeof(double) * 2) + 1;
       Buffer bbuff(response = new byte[rlength], rlength);
 
-      bbuff.setValue<byte>(join(POST, HEATER_PID));
-      bbuff.setValue<double>(_heater->getKp());
-      bbuff.setValue<double>(_heater->getKi());
-      bbuff.setValue<double>(_heater->getKd());
+       bbuff.setValue<byte>(join(POST, HEATER_TEMP));
+       bbuff.setValue<double>(_heater->getOn() );
+       bbuff.setValue<double>(_heater->getOff()); 
     }
+  }
+  else if(name == SAVE_CONFIG)
+  {
+    if(type == SET)
+      this->writeConfig();
   }
 
   return response;
@@ -173,6 +175,9 @@ void OGConfig::readSavedCommands()
   
 }
 
+/*
+ * sera remplacé par un systeme plus simple et générique
+ */
 void OGConfig::writeConfig()
 {
 
@@ -184,19 +189,18 @@ void OGConfig::writeConfig()
 
   size_t dsize = sizeof(double);
 
-  int blength = (sizeof(byte) * 12 ) + (dsize * 3);
+  int blength = (sizeof(byte) * 12 ) + (dsize * 2);
   byte buff[blength] =
   {
     0x03, join(SET, LIGHT_CYCLE), (byte) _light->getStartHour(), (byte) _light->getStopHour(),
     0x02, join(SET, LIGHT_STATE), (byte) _light->getActive(),
     0x02, join(SET, HEATER_STATE), (byte) _heater->getActive(),
-    (byte)(dsize*3+1), join(SET, HEATER_PID) //3 double...
+    (byte)(dsize*2+1), join(SET, HEATER_TEMP) //2 double...
   };
-  
-  double Kp = _heater->getKp(), Ki = _heater->getKi(), Kd = _heater->getKd();
-  cat(buff, (byte*)&Kp, 12            , dsize);
-  cat(buff, (byte*)&Ki, 12 + dsize    , dsize);
-  cat(buff, (byte*)&Kd, 12 + dsize * 2, dsize);
+
+  double von = _heater->getOn(), voff = _heater->getOff();
+  cat(buff, (byte*)&von , 12        , dsize);
+  cat(buff, (byte*)&voff, 12 + dsize, dsize);
   
   config.write(buff, blength);
   config.close();

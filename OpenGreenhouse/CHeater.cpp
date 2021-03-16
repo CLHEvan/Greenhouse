@@ -1,33 +1,47 @@
 #include "CHeater.h"
 
-CHeater::CHeater(ITemp* temp, uint8_t heater) : _temp(temp), _heater(heater)
+CHeater::CHeater(ITemp* temp, uint8_t pin) : _temp(temp), _heaterPin(pin)
 {
-  pinMode(heater, OUTPUT);
+  pinMode(pin, OUTPUT);
 }
 
 void CHeater::update()
 {
   if(!_active) return;
+
+  double temp = _temp->getTemp();
+
+  if(temp < _setOn)
+    digitalWrite(_heaterPin, HIGH);
+  else if(temp > _setOff)
+    digitalWrite(_heaterPin, LOW);
+  /*else do nothing*/
 }
 
-void CHeater::setActive(bool act) { this->_active = act; }
-bool CHeater::getActive() { return this->_active; }
 
-void CHeater::setPID(double Kp, double Ki, double Kd)
+void CHeater::setTemp(double on, double off)
 {
-  _Kp = Kp;
-  _Ki = Ki;
-  _Kd = Kd;
+  _setOn  = on;
+  _setOff = off;
 }
-double CHeater::getKp()
+
+double CHeater::getOn()
 {
-  return _Kp;
+  return _setOn;
 }
-double CHeater::getKi()
+double CHeater::getOff()
 {
-  return _Ki;
+  return _setOff;
 }
-double CHeater::getKd()
+
+void CHeater::setActive(bool state)
 {
-  return _Kd;
+  _active = state;
+
+  if(!state) digitalWrite(_heaterPin, LOW);
+}
+
+bool CHeater::getActive()
+{
+  return _active;
 }

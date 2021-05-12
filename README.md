@@ -3,7 +3,7 @@
 le programme est une base de code pour une serre interieur, aucune utilité particulière.
 la base de code actuelle permet la gestion de la lumière et du chauffage.
 
-le programme tel quel n'es pas fonctionnel il n'est pas finis.
+le programme n'est pas finis donc pas fonctionnel.
 
 ## Fonctionnement:
 

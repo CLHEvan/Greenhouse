@@ -1,20 +1,20 @@
-#Open Greenhouse
+# Open Greenhouse
 
 Open Greenhouse est un simple projet dans le but de m’entraîner.
 
 C'est un programme qui fonctionne sous Arduino, il est fait le plus modifiable et adaptable possible,
 on peut ainsi facilement ajouter ou changer des capteurs.
 
-##Fonctionnement
+## Fonctionnement
 
 le programme se compose de deux type classes, **control** et **sensor**.
 
-Les classes **sensor**:
+Les classes **sensor**: <br />
 	sont les entrées, par exemple **STemp** qui fournit une température
-	par un capteur, ou la classe **STime* qui fournie la date et l'heure par
+	par un capteur, ou la classe **STime** qui fournie la date et l'heure par
 	un module RTC(qui n'est pas vraiment un capteur mais bon).
 
-Les classes **control**:
+Les classes **control**: <br />
 	sont comme leur nom l'indique se sont des classes qui contrôle, par exemple la classe **CHeater**
 	contrôle le chauffage avec la température que **STemp** lui fournit, on peut dire que les
 	les classes **control** gèrent les sortie.

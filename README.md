@@ -1,8 +1,8 @@
 # Open Greenhouse
 
-Open Greenhouse est un simple projet dans le but de m’entraîner.
+Open Greenhouse est un simple projet dans le but de m’entraîner, il permet de faire fonctionner une serre d’intérieur, c’est surtout utilisé par des laboratoire ou pour maintenir des espèces végétale qui ne sont pas dans leur pays d’origine.
 
-C'est un programme qui fonctionne sous Arduino, il est fait le plus modifiable et adaptable possible,
+Le programme fonctionne sous Arduino, il est fait le plus modifiable et adaptable possible,
 on peut ainsi facilement ajouter ou changer des capteurs et fonctionnalité.
 
 ## Fonctionnement

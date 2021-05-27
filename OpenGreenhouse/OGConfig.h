@@ -20,6 +20,7 @@ typedef char STSize_t;
 
 enum class EType:char{INT_T = 0x01, FLOAT_T = 0x02, STRUCT_T = 0x03};
 
+//containe type informations
 struct SType
 {
     SType(EType type, STSize_t size) : type(type), size(size) {}
@@ -27,6 +28,7 @@ struct SType
     STSize_t size;
 };
 
+//contain name used to identify paramters and configurables
 struct OGName
 {
     OGName(const char pname[NAME_SIZE], int length)
@@ -48,7 +50,7 @@ struct SParameter
     OGName name;
     SType type;
     void* value;
-    bool saveable;
+    bool saveable; //if ConfigSaver can save it
 };
 
 class IConfigurable
@@ -58,16 +60,21 @@ public:
     virtual OGName getConfigName() = 0;
 };
 
-class OGConfig; //forward declaration
+class OGConfig; //forward declaration (codepends between OGConfig and ConfigSaver)
 
-//define in ConfigSaver.cpp
+/*
+ * Class who save parameters.
+ * define in ConfigSaver.cpp
+ */
 class ConfigSaver
 {
 public:
     ConfigSaver(OGConfig* config, uint8_t sdpin);
 
+    //return false if an error has occurred esle return true
     bool saveConfig();
     bool readConfig();
+    //
 
 private:
     OGConfig* config;
@@ -79,8 +86,10 @@ public:
     OGConfig(IConfigurable** configurables, int clength, uint8_t sdpin);
     ~OGConfig();
 
+    //interpreter of commands
     void  onCommand(char* cmd, int clength);
-    char* onCommand(char* cmd, int clength, int& rlength);
+    char* onCommand(char* cmd, int clength, int& rlength); //the buffer response must be deleted
+    //
 
 private:
     ConfigSaver* saver;  //object to save saveable configurables

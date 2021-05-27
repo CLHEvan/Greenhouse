@@ -41,8 +41,9 @@ class STime : IConfigurable
 {
 public:
     STime();
-    
+
     bool bewteenHours(uint8_t h1, uint8_t h2, uint8_t cmp);
+    bool bewteenHours(uint8_t h1, uint8_t h2);
     
     STimeYear getTime();
     STimeYear getLastUpdatedTime();

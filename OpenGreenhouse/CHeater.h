@@ -8,11 +8,7 @@
 class CHeater : public IConfigurable
 {
 public:
-    CHeater(STemp* tempSensorn, uint8_t pin, double temp, double period)
-                : tempSensor(tempSensor), ptemp(temp), pperiod(period)
-    {
-        pinMode(pin, OUTPUT);
-    }
+    CHeater(STemp* tempSensorn, uint8_t hpin, double temp, double period);
     
     void update();
     
@@ -21,11 +17,11 @@ public:
     SParameter* getParams(int& length) override;
     
 private:
-    STemp* tempSensor;
-    uint8_t pin;
+    STemp* tempSensor; //temperature provider
+    uint8_t hpin;      //heater pin
     
-    double ptemp;   //parameter temperature
-    double pperiod; //parameter period
+    double ptemp;   //parameter: temperature
+    double pperiod; //parameter: period
     
     bool isActive = false;
 

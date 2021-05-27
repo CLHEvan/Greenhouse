@@ -61,6 +61,15 @@ void STime::begin()
     }
 }
 
+bool STime::bewteenHours(uint8_t h1, uint8_t h2, uint8_t cmp)
+{
+    return h1 <= cmp && h2 >= cmp;
+}
+bool STime::bewteenHours(uint8_t h1, uint8_t h2)
+{
+    return this->bewteenHours(h1, h2, lastUpdateTime.hour);
+}
+
 OGName STime::getConfigName()
 {
     return OGName("Time", 4);

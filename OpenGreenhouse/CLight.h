@@ -8,7 +8,7 @@
 class CLight : public IConfigurable
 {
 public:
-    CLight(STime* time, uint8_t startHour, uint8_t stopHour);
+    CLight(STime* time, uint8_t lightpin, uint8_t startHour, uint8_t stopHour);
 
     void update();
 
@@ -16,10 +16,12 @@ public:
     SParameter* getParams(int& length) override;
     
 private:
-    uint8_t startHour;
-    uint8_t stopHour;
+    uint8_t lightpin;  //light pin
 
-    STime* time;
+    uint8_t startHour; //parameter: start light hour
+    uint8_t stopHour;  //parameter: stop light hour
+
+    STime* time; //time provider
 
     SParameter params[2] = 
     {

@@ -1,5 +1,11 @@
 #include "CHeater.h"
 
+CHeater::CHeater(STemp* tempSensorn, uint8_t hpin, double temp, double period)
+    : tempSensor(tempSensor), hpin(hpin), ptemp(temp), pperiod(period)
+{
+    pinMode(hpin, OUTPUT);
+}
+
 void CHeater::update()
 {
     double temp = this->tempSensor->getTemp();
@@ -26,7 +32,7 @@ void CHeater::update()
     
     isActive = result;
     
-    digitalWrite(pin, result);
+    digitalWrite(hpin, result);
 }
 
 OGName CHeater::getConfigName()

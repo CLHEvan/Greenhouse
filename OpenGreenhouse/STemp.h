@@ -4,14 +4,16 @@
 #include <Arduino.h>
 
 /*
+ * temprature provider, 
  * based on LM35.
+ * 
  */
 class STemp
 {
 public:
     STemp(uint8_t spin);
 
-    //Get temperature in celcuis
+    //temperature in celcuis
     double getTemp();
     
 private:

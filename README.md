@@ -1,16 +1,29 @@
-# Greenhouse
+#Open Greenhouse
 
-le programme est une base de code pour une serre interieur, aucune utilité particulière.
-la base de code actuelle permet la gestion de la lumière et du chauffage.
+Open Greenhouse est un simple projet dans le but de m’entraîner.
 
-le programme n'est pas finis donc pas fonctionnel.
+C'est un programme qui fonctionne sous Arduino, il est fait le plus modifiable et adaptable possible,
+on peut ainsi facilement ajouter ou changer des capteurs.
 
-## Fonctionnement:
+##Fonctionnement
 
-Les sortis(lumière, chauffage) sont géré par les les classes controleur (commence par C), ces class contiennent la logique de controle pour les sortie.
+le programme se compose de deux type classes, **control** et **sensor**.
 
-Les classes controle s’appuient sur des entrées sous forme de classes abstraite, cela permet de facilement changer de type de capteur ou module.
+Les classes **sensor**:
+	sont les entrées, par exemple **STemp** qui fournit une température
+	par un capteur, ou la classe **STime* qui fournie la date et l'heure par
+	un module RTC(qui n'est pas vraiment un capteur mais bon).
 
-La classe OGConfig sert d’interpréteur de commandes pour géré les différentes classes controleur, si nous voulons pouvoir interagir
-avec les modules il suffit d’utiliser cette classe par exemple via communication serie, wifi, radio...
-Cette classe enregistre dans une carte SD sous forme de commandes les paramètres modifiables des classes controleur, utile lors de mise hors tension.
+Les classes **control**:
+	sont comme leur nom l'indique se sont des classes qui contrôle, par exemple la classe **CHeater**
+	contrôle le chauffage avec la température que **STemp** lui fournit, on peut dire que les
+	les classes **control** gèrent les sortie.
+
+Maintenant que notre programme peut utiliser des capteurs et contrôler des sorties il faut pouvoir fournir
+à l'utilisateur un moyen de paramétrer tout cela.
+C'est la qu'entre en jeux **OGConfig**, on donne à cette classe les paramètre par référence(voir **IConfigurable** dans **OGConfigh**) comme
+la température voulu ou  la dentition de l'heure du système, et fournit un système relativement simple et adaptable de commande qui permet d’interagir avec 
+ses paramètres, ça se résume en gros par un get/set qui s'adapte aux paramètres qu'on lui donne.
+
+Par défaut **OGconfig** est relié au port Serial, il est tout à fait possible de le connecter à un module wifi ou autre.
+Pour pouvoir utiliser la configuration il faut donc créer une application sur ordinateur ou téléphone qui géré les paramètres.

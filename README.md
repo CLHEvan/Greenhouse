@@ -27,3 +27,5 @@ ses paramètres, ça se résume en gros par un get/set qui s'adapte aux paramèt
 
 Par défaut **OGconfig** est relié au port Serial, il est tout à fait possible de le connecter à un module wifi ou autre.
 Pour pouvoir utiliser la configuration il faut donc créer une application sur ordinateur ou téléphone qui géré les paramètres.
+
+Enfin le programme permet par carte SD de sauvegarder la configuration actuelle, cela se fait via le système de commandes.

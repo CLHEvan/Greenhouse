@@ -1,9 +1,28 @@
 #include "OGConfig.h"
 #include "Buffer.h"
 
-#define CMD_GET_ALL   0x01 //cmd = {name: GetAll   } , {return: [<id>, <type>, <value>]                  } , {param: null                             }
-#define CMD_SET_PARAM 0x02 //cmd = {name: SetParam } , {return: <id_config>, <id_param>, <type>, <value> } , {param: <id_config>, <id_param>, <value> }
-#define CMD_GET_PARAM 0x03 //cmd = {name: GetParam } , {return: <id_config>, <id_param>, <type>, <value> } , {param: <id_config>, <id_param>          }
+OGConfig::OGConfig(IConfigurable** configurables, int clength, uint8_t sdpin)
+            : configurables(configurables), configLength(clength)
+{
+    saver = new ConfigSaver(this, sdpin);
+    
+    paramsLength = 0;
+    for(int i = 0; i < clength; i++)
+    {
+        int length;
+        SParameter* params = configurables[i]->getParams(length);
+        
+        for(int j = 0; j < length; j++)
+            if(params[j].saveable) saveablesLength++;
+        
+        paramsLength += length;
+    }
+}
+
+OGConfig::~OGConfig()
+{
+    delete saver;
+}
 
 char* OGConfig::onCommand(char* cmd, int clength, int& rlength)
 {
@@ -14,8 +33,39 @@ char* OGConfig::onCommand(char* cmd, int clength, int& rlength)
         return response;
     
     char cmdName = cmd[0];
-    
-    if(cmdName == CMD_GET_PARAM || cmdName == CMD_SET_PARAM)
+
+    if(cmdName == CMD_GET_ALL || cmdName == CMD_GET_SAVABLES) // <cmd>, [<id_config>, <id_param>, <type>, <size>, <value>]
+    {
+        int sizep = (cmdName == CMD_GET_ALL) ? this->paramsLength : this->saveablesLength;
+        
+        rlength = (1 + NAME_SIZE * 2 + 1 + sizeof(STSize_t)) + sizep;
+        response = new char[rlength];
+
+        Buffer buff(response, rlength);
+        buff.setValue<char>(cmdName);
+        
+        for(int i = 0; i < this->configLength; i++) //search configurable and take her params
+        {
+            IConfigurable* conf = this->configurables[i];
+
+            int plength;
+            SParameter* params = conf->getParams(plength);
+            
+            for(int j = 0; j < plength; j++)
+            {
+                SParameter param = params[j];
+                if(cmdName == CMD_GET_SAVABLES && !param.saveable)
+                    continue;
+                
+                buff.setValue<OGName>(conf->getConfigName());
+                buff.setValue<OGName>(param.name);
+                buff.setValue<char>(static_cast<char>(param.type.type));
+                buff.setValue<STSize_t>(param.type.size);
+                buff.setVoidValue(param.type.size, param.value);
+            }
+        }
+    }
+    else if(cmdName == CMD_GET_PARAM || cmdName == CMD_SET_PARAM || cmdName == CMD_BLIND_SET_PARAM)
     {
         char cname[NAME_SIZE];
         char pname[NAME_SIZE];
@@ -81,19 +131,37 @@ char* OGConfig::onCommand(char* cmd, int clength, int& rlength)
         }
 
         //return parameter values to CMD_SET_PARAM and CMD_GET_PARAM
-        char valueType = (char)cparam->type.type;
-        STSize_t valueSize = cparam->type.size;
-        rlength = 2 + NAME_SIZE * 2 + valueSize + sizeof(STSize_t);
-        response = new char[rlength];
-
-        Buffer rbuff(response, rlength);
-        rbuff.setValue<char>(cmdName);
-        rbuff.setValueFromPointer<char[NAME_SIZE]>(cname);
-        rbuff.setValueFromPointer<char[NAME_SIZE]>(pname);
-        rbuff.setValue<char>(valueType);
-        rbuff.setValue<STSize_t>(valueSize);
-        rbuff.setVoidValue(valueSize, cparam->value);
+        if(cmdName != CMD_BLIND_SET_PARAM)
+        {
+            char valueType = static_cast<char>(cparam->type.type);
+            STSize_t valueSize = cparam->type.size;
+            rlength = 2 + NAME_SIZE * 2 + valueSize + sizeof(STSize_t);
+            response = new char[rlength];
+            
+            Buffer rbuff(response, rlength); //cmdName configName paramName valueType valueSize value
+            rbuff.setValue<char>(cmdName);
+            rbuff.setValueFromPointer<char[NAME_SIZE]>(cname);
+            rbuff.setValueFromPointer<char[NAME_SIZE]>(pname);
+            rbuff.setValue<char>(valueType);
+            rbuff.setValue<STSize_t>(valueSize);
+            rbuff.setVoidValue(valueSize, cparam->value);
+        }
+    }
+    else if(cmdName == CMD_SAVE)
+    {
+        this->saver->saveConfig();
+    }
+    else if(cmdName == CMD_READ)
+    {
+        this->saver->readConfig();
     }
 
     return response;
+}
+
+void OGConfig::onCommand(char* cmd, int clength)
+{
+    int rlength;
+    char* response = this->onCommand(cmd, clength, rlength);
+    delete[] response;
 }

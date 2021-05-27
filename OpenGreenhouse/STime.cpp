@@ -55,7 +55,7 @@ void STime::begin()
 {
     if(!rtc.begin())
     {
-        Serial.println("Couldn't fin RTC");
+        Serial.println("ERROR: Couldn't find RTC");
         Serial.flush();
         abort();
     }
@@ -68,6 +68,9 @@ OGName STime::getConfigName()
 
 SParameter* STime::getParams(int& length)
 {
+    adjustTime = getLastUpdatedTime();
+    lastAdjustedTime = adjustTime;
+    
     length = 1;
     return this->params;
 }

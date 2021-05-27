@@ -8,6 +8,7 @@
 
 #define TEMP_SENSOR_PIN  5
 #define HEATER_PIN 6
+#define SD_PIN 10
 
 STime time;
 STemp temp(TEMP_SENSOR_PIN);
@@ -21,14 +22,16 @@ IConfigurable* configurables[3] =
      (IConfigurable*) &light
 };
 
-OGConfig config(configurables, 3);
+OGConfig config(configurables, 3, SD_PIN);
 
 void setup()
 {
-    Serial.begin(115200); //TODO verif eventual data corruption with this speed
+    Serial.begin(115200);
 
     time.begin();
-    
+
+    char cmd[1] = { CMD_READ };
+    config.onCommand(cmd, 1);
 }
 
 void loop()
@@ -42,7 +45,7 @@ void loop()
         int readLength = (int)Serial.readBytes(buff, SERIAL_BUFF_SIZE); //return size_t
 
         int rlength;
-        char* response = config.onCommand(readLength, readLength, rlength);
+        char* response = config.onCommand(buff, readLength, rlength);
 
         Serial.write(response, rlength);
         

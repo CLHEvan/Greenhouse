@@ -67,7 +67,8 @@ private:
         SParameter(
             OGName("adj. time", 9),
             SType(EType::STRUCT_T, sizeof(STimeYear)),
-            &adjustTime
+            &adjustTime,
+            false
         )
     };
 };

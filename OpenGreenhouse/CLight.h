@@ -5,7 +5,7 @@
 #include "OGConfig.h"
 #include "STime.h"
 
-class CLight : IConfigurable
+class CLight : public IConfigurable
 {
 public:
     CLight(STime* time, uint8_t startHour, uint8_t stopHour);

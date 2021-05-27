@@ -18,7 +18,7 @@ public:
     template<typename T>
     T getValue()
     {
-        _cursor -= sizeof(T);
+        _cursor += sizeof(T);
         return getValue<T>(_cursor);
     }
 
@@ -60,7 +60,7 @@ public:
     char get(size_t index);
 
     void setCursor(size_t cursor);
-    size_t getCursor(size_t cursor);
+    size_t getCursor();
 
 private:
     size_t _size;

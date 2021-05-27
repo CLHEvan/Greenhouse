@@ -5,7 +5,7 @@
 #include "OGConfig.h"
 #include "STemp.h"
 
-class CHeater : IConfigurable
+class CHeater : public IConfigurable
 {
 public:
     CHeater(STemp* tempSensorn, uint8_t pin, double temp, double period)
